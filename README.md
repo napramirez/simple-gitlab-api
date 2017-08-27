@@ -1,4 +1,5 @@
 # simple-gitlab-api
+[![npm version](https://badge.fury.io/js/simple-gitlab-api.svg)](https://badge.fury.io/js/simple-gitlab-api)
 [![Build Status](https://travis-ci.org/napramirez/simple-gitlab-api.svg?branch=master)](https://travis-ci.org/napramirez/simple-gitlab-api)
 
 A simple GitLab API library for Node.js using simple request-promise calls
