@@ -9,7 +9,10 @@ var self = {
       json: true,
       method: apiMethod,
       body: apiParams
-    })
+    }),
+
+  get: (api_path, api_params) =>
+    self.invoke('GET', api_path, api_params)
 
 }
 
