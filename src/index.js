@@ -12,7 +12,16 @@ var self = {
     }),
 
   get: (api_path, api_params) =>
-    self.invoke('GET', api_path, api_params)
+    self.invoke('GET', api_path, api_params),
+
+  post: (api_path, api_params = {}) =>
+    self.invoke('POST', api_path, api_params),
+
+  delete: (api_path, api_params = {}) =>
+    self.invoke('DELETE', api_path, api_params),
+
+  put: (api_path, api_params = {}) =>
+    self.invoke('PUT', api_path, api_params)
 
 }
 
