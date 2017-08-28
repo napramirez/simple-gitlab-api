@@ -51,6 +51,21 @@ var self = {
     self.put('/projects/' + encodeURIComponent(project_path), {
       name: name,
       path: name
+    }),
+
+  waitUntilForkComplete: (project_path) =>
+    new Promise(function(fullfill, reject) {
+      var forkRefreshId = setInterval(() =>
+        self.getProject(project_path)
+          .then(function(project) {
+            if (project.import_status == 'finished') {
+              clearInterval(forkRefreshId);
+              fullfill();
+            }
+          }, function(err) {
+            clearInterval(forkRefreshId);
+            reject(err);
+          }), 3000)
     })
 
 }
