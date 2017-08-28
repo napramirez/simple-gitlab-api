@@ -29,7 +29,10 @@ var self = {
       name: name,
       visibility: 'internal',
       lfs_enabled: false
-    })
+    }),
+
+  getGroup: (path) =>
+    self.get('/groups/' + path)
 
 }
 
