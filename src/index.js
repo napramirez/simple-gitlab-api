@@ -21,7 +21,15 @@ var self = {
     self.invoke('DELETE', api_path, api_params),
 
   put: (api_path, api_params = {}) =>
-    self.invoke('PUT', api_path, api_params)
+    self.invoke('PUT', api_path, api_params),
+
+  newGroup: (path, name) =>
+    self.post('/groups', {
+      path: path,
+      name: name,
+      visibility: 'internal',
+      lfs_enabled: false
+    })
 
 }
 
