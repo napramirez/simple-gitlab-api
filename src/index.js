@@ -37,6 +37,11 @@ var self = {
   forkProject: (project_path, namespace) =>
     self.post('/projects/' + encodeURIComponent(project_path) + '/fork', {
       namespace: namespace
+    }),
+
+  getProject: (project_path) =>
+    self.get('/projects/' + encodeURIComponent(project_path), {
+      statistics: false
     })
 
 }
