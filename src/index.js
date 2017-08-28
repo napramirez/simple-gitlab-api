@@ -32,7 +32,12 @@ var self = {
     }),
 
   getGroup: (path) =>
-    self.get('/groups/' + path)
+    self.get('/groups/' + path),
+
+  forkProject: (project_path, namespace) =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/fork', {
+      namespace: namespace
+    })
 
 }
 
