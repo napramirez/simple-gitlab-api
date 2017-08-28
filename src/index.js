@@ -45,7 +45,13 @@ var self = {
     }),
 
   deleteForkRelationship: (project_path) =>
-    self.delete('/projects/' + encodeURIComponent(project_path) + '/fork')
+    self.delete('/projects/' + encodeURIComponent(project_path) + '/fork'),
+
+  renameProject: (project_path, name) =>
+    self.put('/projects/' + encodeURIComponent(project_path), {
+      name: name,
+      path: name
+    })
 
 }
 
