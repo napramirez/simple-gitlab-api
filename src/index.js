@@ -42,7 +42,10 @@ var self = {
   getProject: (project_path) =>
     self.get('/projects/' + encodeURIComponent(project_path), {
       statistics: false
-    })
+    }),
+
+  deleteForkRelationship: (project_path) =>
+    self.delete('/projects/' + encodeURIComponent(project_path) + '/fork')
 
 }
 
