@@ -66,6 +66,12 @@ var self = {
             clearInterval(forkRefreshId);
             reject(err);
           }), 3000)
+    }),
+
+  newGroupVariable: (path, key, value) =>
+    self.post('/groups/' + path + '/variables', {
+      key: key,
+      value: value
     })
 
 }
