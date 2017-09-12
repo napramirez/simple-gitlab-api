@@ -72,7 +72,10 @@ var self = {
     self.post('/groups/' + path + '/variables', {
       key: key,
       value: value
-    })
+    }),
+
+  getProjectSnippetContent: (project_path, snippet_id) =>
+    self.get('/projects/' + encodeURIComponent(project_path) + '/snippets/' + snippet_id + '/raw')
 
 }
 
