@@ -75,7 +75,14 @@ var self = {
     }),
 
   getProjectSnippetContent: (project_path, snippet_id) =>
-    self.get('/projects/' + encodeURIComponent(project_path) + '/snippets/' + snippet_id + '/raw')
+    self.get('/projects/' + encodeURIComponent(project_path) + '/snippets/' + snippet_id + '/raw'),
+
+  newRepositoryFile: (project_path, file_path, branch, content, commit_message) =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/repository/files/' + encodeURIComponent(file_path), {
+      branch: branch,
+      content: content,
+      commit_message: commit_message
+    })
 
 }
 
