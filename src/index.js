@@ -82,6 +82,15 @@ var self = {
       branch: branch,
       content: content,
       commit_message: commit_message
+    }),
+
+  searchUser: (username) =>
+    self.get('/users?username=' + username),
+
+  addGroupMember: (path, user_id) =>
+    self.post('/groups/' + encodeURIComponent(path) + '/members', {
+      user_id: user_id,
+      access_level: 40
     })
 
 }
