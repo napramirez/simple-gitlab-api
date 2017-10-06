@@ -10,11 +10,11 @@ const config = {
 
 const self = {
 
-  setConfig = (conf) => Object.assign(config, conf),
+  setConfig: (conf) => Object.assign(config, conf),
 
   invoke: (apiMethod, apiPath, apiParams = {}) =>
     requestPromise({
-      uri: `${config.gitlabUrl}${config.gitlabApiPrefix}${apiPath}`,
+      uri: config.gitlabUrl + config.gitlabApiPrefix + apiPath,
       headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
@@ -76,6 +76,12 @@ const self = {
             clearInterval(forkRefreshId);
             reject(err);
           }), 3000)
+    }),
+
+  newProjectVariable: (project_path, key, value) =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/variables', {
+      key: key,
+      value: value
     }),
 
   newGroupVariable: (path, key, value) =>
