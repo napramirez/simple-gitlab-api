@@ -91,7 +91,19 @@ var self = {
     self.post('/groups/' + encodeURIComponent(path) + '/members', {
       user_id: user_id,
       access_level: 40
-    })
+    }),
+
+  addSSHKey: (title, key) =>
+    self.post('/user/keys', {
+      title: title,
+      key: key
+    }),
+
+  getSSHKeys: () =>
+    self.get('/user/keys'),
+
+  deleteSSHKey: (key_id) =>
+    self.delete('/user/keys/' + key_id)
 
 }
 
