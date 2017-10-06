@@ -1,11 +1,21 @@
-var requestPromise = require('request-promise');
+const requestPromise = require('request-promise');
 
-var self = {
+const { GITLAB_URL, GITLAB_API_PREFIX, GITLAB_API_TOKEN } = process.env;
+
+const config = {
+  gitlabUrl: GITLAB_URL,
+  gitlabApiPrefix: GITLAB_API_PREFIX || '/api/v4',
+  gitlabApiToken: GITLAB_API_TOKEN
+};
+
+const setConfig = (conf) => Object.assign(config, conf);
+
+const self = {
 
   invoke: (apiMethod, apiPath, apiParams = {}) =>
     requestPromise({
-      uri: process.env.GITLAB_URL + process.env.GITLAB_API_PREFIX + apiPath,
-      headers: { 'PRIVATE-TOKEN': process.env.GITLAB_API_TOKEN },
+      uri: `${config.gitlabUrl}${config.gitlabApiPrefix}${apiPath}`,
+      headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
       body: apiParams
@@ -55,7 +65,7 @@ var self = {
 
   waitUntilForkComplete: (project_path) =>
     new Promise(function(fullfill, reject) {
-      var forkRefreshId = setInterval(() =>
+      const forkRefreshId = setInterval(() =>
         self.getProject(project_path)
           .then(function(project) {
             if (project.import_status == 'finished') {
