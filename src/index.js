@@ -8,9 +8,9 @@ const config = {
   gitlabApiToken: GITLAB_API_TOKEN
 };
 
-const setConfig = (conf) => Object.assign(config, conf);
-
 const self = {
+
+  setConfig = (conf) => Object.assign(config, conf),
 
   invoke: (apiMethod, apiPath, apiParams = {}) =>
     requestPromise({
