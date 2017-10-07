@@ -12,20 +12,21 @@ const self = {
 
   setConfig: (conf) => Object.assign(config, conf),
 
-  invoke: (apiMethod, apiPath, apiParams = {}) =>
+  invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}) =>
     requestPromise({
       uri: config.gitlabUrl + config.gitlabApiPrefix + apiPath,
       headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
-      body: apiParams
+      body: apiParams,
+      qs: queryParams
     }),
 
   get: (api_path, api_params) =>
     self.invoke('GET', api_path, api_params),
 
-  post: (api_path, api_params = {}) =>
-    self.invoke('POST', api_path, api_params),
+  post: (api_path, api_params = {}, query_params = {}) =>
+    self.invoke('POST', api_path, api_params, query_params),
 
   delete: (api_path, api_params = {}) =>
     self.invoke('DELETE', api_path, api_params),
@@ -84,11 +85,20 @@ const self = {
       value: value
     }),
 
+  updateProjectVariable: (project_path, key, value) =>
+    self.put('/projects/' + encodeURIComponent(project_path) + '/variables/' + key, {
+      key: key,
+      value: value
+    }),
+
   newGroupVariable: (path, key, value) =>
     self.post('/groups/' + path + '/variables', {
       key: key,
       value: value
     }),
+
+  newPipeline: (project_path, ref = 'master') =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/pipeline', {}, { ref }),
 
   getProjectSnippetContent: (project_path, snippet_id) =>
     self.get('/projects/' + encodeURIComponent(project_path) + '/snippets/' + snippet_id + '/raw'),
