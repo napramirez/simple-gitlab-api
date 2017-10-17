@@ -91,7 +91,10 @@ var self = {
     self.post('/groups/' + encodeURIComponent(path) + '/members', {
       user_id: user_id,
       access_level: 40
-    })
+    }),
+
+  getActiveUsers: () =>
+    self.get('/users?active=true&per_page=100')
 
 }
 
