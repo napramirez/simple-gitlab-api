@@ -129,7 +129,10 @@ const self = {
     self.get('/user/keys'),
 
   deleteSSHKey: (key_id) =>
-    self.delete('/user/keys/' + key_id)
+    self.delete('/user/keys/' + key_id),
+
+  getActiveUsers: () =>
+    self.get('/users?active=true&per_page=100')
 
 }
 
