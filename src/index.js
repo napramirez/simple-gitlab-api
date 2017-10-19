@@ -1,21 +1,32 @@
-var requestPromise = require('request-promise');
+const requestPromise = require('request-promise');
 
-var self = {
+const { GITLAB_URL, GITLAB_API_PREFIX, GITLAB_API_TOKEN } = process.env;
 
-  invoke: (apiMethod, apiPath, apiParams = {}) =>
+const config = {
+  gitlabUrl: GITLAB_URL,
+  gitlabApiPrefix: GITLAB_API_PREFIX || '/api/v4',
+  gitlabApiToken: GITLAB_API_TOKEN
+};
+
+const self = {
+
+  setConfig: (conf) => Object.assign(config, conf),
+
+  invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}) =>
     requestPromise({
-      uri: process.env.GITLAB_URL + process.env.GITLAB_API_PREFIX + apiPath,
-      headers: { 'PRIVATE-TOKEN': process.env.GITLAB_API_TOKEN },
+      uri: config.gitlabUrl + config.gitlabApiPrefix + apiPath,
+      headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
-      body: apiParams
+      body: apiParams,
+      qs: queryParams
     }),
 
   get: (api_path, api_params) =>
     self.invoke('GET', api_path, api_params),
 
-  post: (api_path, api_params = {}) =>
-    self.invoke('POST', api_path, api_params),
+  post: (api_path, api_params = {}, query_params = {}) =>
+    self.invoke('POST', api_path, api_params, query_params),
 
   delete: (api_path, api_params = {}) =>
     self.invoke('DELETE', api_path, api_params),
@@ -55,7 +66,7 @@ var self = {
 
   waitUntilForkComplete: (project_path) =>
     new Promise(function(fullfill, reject) {
-      var forkRefreshId = setInterval(() =>
+      const forkRefreshId = setInterval(() =>
         self.getProject(project_path)
           .then(function(project) {
             if (project.import_status == 'finished') {
@@ -68,11 +79,26 @@ var self = {
           }), 3000)
     }),
 
+  newProjectVariable: (project_path, key, value) =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/variables', {
+      key: key,
+      value: value
+    }),
+
+  updateProjectVariable: (project_path, key, value) =>
+    self.put('/projects/' + encodeURIComponent(project_path) + '/variables/' + key, {
+      key: key,
+      value: value
+    }),
+
   newGroupVariable: (path, key, value) =>
     self.post('/groups/' + path + '/variables', {
       key: key,
       value: value
     }),
+
+  newPipeline: (project_path, ref = 'master') =>
+    self.post('/projects/' + encodeURIComponent(project_path) + '/pipeline', {}, { ref }),
 
   getProjectSnippetContent: (project_path, snippet_id) =>
     self.get('/projects/' + encodeURIComponent(project_path) + '/snippets/' + snippet_id + '/raw'),
@@ -92,6 +118,18 @@ var self = {
       user_id: user_id,
       access_level: 40
     }),
+
+  addSSHKey: (title, key) =>
+    self.post('/user/keys', {
+      title: title,
+      key: key
+    }),
+
+  getSSHKeys: () =>
+    self.get('/user/keys'),
+
+  deleteSSHKey: (key_id) =>
+    self.delete('/user/keys/' + key_id),
 
   getActiveUsers: () =>
     self.get('/users?active=true&per_page=100')
