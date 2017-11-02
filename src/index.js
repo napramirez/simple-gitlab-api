@@ -1,4 +1,6 @@
+const { join } = require('path');
 const requestPromise = require('request-promise');
+const { resolve } = require('url');
 
 const { GITLAB_URL, GITLAB_API_PREFIX, GITLAB_API_TOKEN } = process.env;
 
@@ -16,7 +18,7 @@ const self = {
 
   invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}) =>
     requestPromise({
-      uri: config.gitlabUrl + config.gitlabApiPrefix + apiPath,
+      uri: resolve(config.gitlabUrl, join(config.gitlabApiPrefix, apiPath)),
       headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
@@ -24,17 +26,20 @@ const self = {
       qs: queryParams
     }),
 
-  get: (api_path, api_params) =>
-    self.invoke('GET', api_path, api_params),
+  get: (api_path, api_params, query_params) =>
+    self.invoke('GET', api_path, api_params, query_params),
 
-  post: (api_path, api_params = {}, query_params = {}) =>
+  post: (api_path, api_params, query_params) =>
     self.invoke('POST', api_path, api_params, query_params),
 
-  delete: (api_path, api_params = {}) =>
+  delete: (api_path, api_params) =>
     self.invoke('DELETE', api_path, api_params),
 
-  put: (api_path, api_params = {}) =>
+  put: (api_path, api_params) =>
     self.invoke('PUT', api_path, api_params),
+
+  getFile: (project_path, path, ref = 'master') =>
+    self.get('/projects/' + encodeURIComponent(project_path) + '/repository/files/' + encodeURIComponent(path), undefined, { ref }),
 
   newGroup: (path, name) =>
     self.post('/groups', {
