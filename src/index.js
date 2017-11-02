@@ -10,6 +10,8 @@ const config = {
 
 const self = {
 
+  config,
+
   setConfig: (conf) => Object.assign(config, conf),
 
   invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}) =>
