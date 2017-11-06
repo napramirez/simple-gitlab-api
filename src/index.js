@@ -41,6 +41,9 @@ const self = {
   getFile: (project_path, path, ref = 'master') =>
     self.get('/projects/' + encodeURIComponent(project_path) + '/repository/files/' + encodeURIComponent(path), undefined, { ref }),
 
+  listFolder: (project_path, path, ref = 'master') =>
+    self.get('/projects/' + encodeURIComponent(project_path) + '/repository/tree', undefined, { path }),
+
   newGroup: (path, name) =>
     self.post('/groups', {
       path: path,
