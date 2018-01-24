@@ -16,18 +16,19 @@ const self = {
 
   setConfig: (conf) => Object.assign(config, conf),
 
-  invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}) =>
+  invoke: (apiMethod, apiPath, apiParams = {}, queryParams = {}, resolveWithFullResponse) =>
     requestPromise({
       uri: resolve(config.gitlabUrl, join(config.gitlabApiPrefix, apiPath)),
       headers: { 'PRIVATE-TOKEN': config.gitlabApiToken },
       json: true,
       method: apiMethod,
       body: apiParams,
-      qs: queryParams
+      qs: queryParams,
+      resolveWithFullResponse
     }),
 
-  get: (api_path, api_params, query_params) =>
-    self.invoke('GET', api_path, api_params, query_params),
+  get: (api_path, api_params, query_params, resolveWithFullResponse) =>
+    self.invoke('GET', api_path, api_params, query_params, resolveWithFullResponse),
 
   post: (api_path, api_params, query_params) =>
     self.invoke('POST', api_path, api_params, query_params),
@@ -64,6 +65,16 @@ const self = {
     self.get('/projects/' + encodeURIComponent(project_path), {
       statistics: false
     }),
+
+  getUserProjects: (previousPages = [], page = 1) => {
+    return self.get('/projects/', undefined, { owned: true, per_page: 100, page }, true).then((response) => {
+      const projects = [...previousPages, ...response.body];
+      const nextPage = response.headers['x-next-page'];
+      return nextPage
+        ? self.getUserProjects(projects, page + 1)
+        : projects;
+    });
+  },
 
   deleteForkRelationship: (project_path) =>
     self.delete('/projects/' + encodeURIComponent(project_path) + '/fork'),
